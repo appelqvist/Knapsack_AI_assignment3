@@ -20,4 +20,9 @@ public class GreedySolver {
         Collections.sort(mitems);
         System.out.println("Efter sort: "+mitems);
     }
+
+    public void q(){
+
+    }
+
 }
