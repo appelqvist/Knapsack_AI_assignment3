@@ -6,17 +6,17 @@ package main;
 public class Item implements Comparable<Item>{
     private int mvalue;
     private int mweight;
-    private float mprofitVal;
+    private float mbenefit;
 
     public Item(int value, int weight){
         this.mvalue = value;
         this.mweight = weight;
         if(this.mweight == 0){
-            this.mprofitVal = Float.MAX_VALUE;
+            this.mbenefit = Float.MAX_VALUE;
         }else if(this.mvalue == 0){
-            this.mprofitVal = -1 * mweight;
+            this.mbenefit = -1 * mweight;
         }else {
-            this.mprofitVal = (float) value / weight;
+            this.mbenefit = (float) value / weight;
         }
     }
 
@@ -28,17 +28,22 @@ public class Item implements Comparable<Item>{
         return this.mvalue;
     }
 
-    public float getProfitVal(){
-        return this.mprofitVal;
+    public float getBenefit(){
+        return this.mbenefit;
     }
 
     @Override
     public int compareTo(Item item) {
-        return Math.round(item.getProfitVal()-this.mprofitVal);
+        if(item.getBenefit() == mbenefit){
+            return item.getWeight() - this.getWeight();
+        }
+        else{
+            return Math.round(item.getBenefit()-this.mbenefit);
+        }
     }
 
     @Override
     public String toString() {
-        return "[W:"+this.mweight+",V:"+this.mvalue+",P:"+this.mprofitVal+"]";
+        return "[W:"+this.mweight+",V:"+this.mvalue+",B:"+this.mbenefit +"]";
     }
 }

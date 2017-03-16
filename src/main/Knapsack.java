@@ -9,12 +9,23 @@ public class Knapsack implements Comparable<Knapsack>{
     private int mid;
     private LinkedList<Item> mitems;
     private int mweightLimit;
-    private int mvalue;
-    private int mweight;
+    private int mvalue = 0;
+    private int mweight = 0;
 
     public Knapsack(int id, int weightLimit){
         this.mid = id;
         this.mweightLimit = weightLimit;
+        mitems = new LinkedList<>();
+    }
+
+    public boolean addItem(Item item){
+        if(item.getWeight() <= getWeightLeft()){
+            mitems.add(item);
+            mweight += item.getWeight();
+            mvalue += item.getValue();
+            return true;
+        }
+        return false;
     }
 
     public int getWeightLimit() {
@@ -35,11 +46,15 @@ public class Knapsack implements Comparable<Knapsack>{
 
     @Override
     public String toString() {
-        return "["+mid+":"+"WL:"+mweightLimit+", W:"+mweight+", V:"+mvalue+"]";
+        String out = "\n****************************************************************************************************************************************\n" +
+                "Knapsack: "+mid +", [WL, :"+mweightLimit+"], [W:"+mweight+"], [V:"+mvalue+"], ITEMS: ("+mitems.toString()+")\n" +
+                "****************************************************************************************************************************************\n";
+
+        return out;
     }
 
     @Override
     public int compareTo(Knapsack knapsack) {
-        return getWeightLeft() - knapsack.getWeightLeft();
+        return knapsack.getWeightLeft() - getWeightLeft();
     }
 }
