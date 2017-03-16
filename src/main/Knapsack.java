@@ -28,6 +28,18 @@ public class Knapsack implements Comparable<Knapsack>{
         return false;
     }
 
+    public boolean removeItem(Item item){
+        if(mitems.remove(item)){
+            mvalue -= item.getValue();
+            mweight -= item.getWeight();
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public int getID(){ return this.mid; }
+
     public int getWeightLimit() {
         return this.mweightLimit;
     }
@@ -40,8 +52,21 @@ public class Knapsack implements Comparable<Knapsack>{
         return this.mweight;
     }
 
+    public LinkedList<Item> getItems() { return this.mitems; }
+
     public int getWeightLeft(){
         return this.mweightLimit - this.mweight;
+    }
+
+    public Knapsack getCopy(){
+        Knapsack copy = new Knapsack(mid, mweightLimit);
+        for(Item i : mitems){
+            if(!copy.addItem(i)){
+                System.err.print("COPY FAILED");
+                System.exit(0);
+            }
+        }
+        return copy;
     }
 
     @Override
@@ -56,5 +81,13 @@ public class Knapsack implements Comparable<Knapsack>{
     @Override
     public int compareTo(Knapsack knapsack) {
         return knapsack.getWeightLeft() - getWeightLeft();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if(o instanceof Knapsack){
+            return ((Knapsack) o).getID() == mid;
+        }
+        return super.equals(o);
     }
 }

@@ -15,9 +15,29 @@ public class Main {
         new Main().startApplication();
     }
 
-    public void startApplication() {
+    private Neighbourhood startGreedy(ArrayList<Knapsack> knapsacks, LinkedList<Item> items){
+        GreedySolver gs = new GreedySolver(knapsacks, items);
+        gs.startGreedy();
+        return gs.getSolutionAsNeighbourhood();
+    }
+
+    private Neighbourhood startNeighbourSearch(ArrayList<Knapsack> knapsacks, LinkedList<Item> items){
+        Neighbourhood currentNeighbourhood = startGreedy(knapsacks, items);
+        Neighbourhood improvedSolutionNeighbourhood = NeighbourSearch.improvedSolution(currentNeighbourhood);
+        return improvedSolutionNeighbourhood;
+    }
+
+    private void printResult(Neighbourhood n){
+        System.out.println(n);
+    }
+
+    private void startApplication() {
         while (true) {
-            int answer = Integer.parseInt(JOptionPane.showInputDialog(null, "How do you want to solve the Knapsack-Program:\n0:Exit \n1: Greedy (not optimal)"));
+            int answer = Integer.parseInt(JOptionPane.showInputDialog(null,
+                    "How do you want to solve the Knapsack-Program:\n" +
+                            "0:Exit \n" +
+                            "1: greedy\n" +
+                            "2: greedy + neighboursearch"));
             if (answer == 0) {
                 System.exit(0);
             } else {
@@ -41,10 +61,9 @@ public class Main {
                 }
 
                 if (answer == 1) {
-                    GreedySolver gs = new GreedySolver(knapsacks, items);
-                    gs.startGreedy();
+                    printResult(startGreedy(knapsacks, items));
                 } else if (answer == 2) {
-                    System.out.println("Neighbour search");
+                    startNeighbourSearch(knapsacks,items);
                 }
             }
         }

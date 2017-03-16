@@ -52,4 +52,8 @@ public class GreedySolver {
         fillGreedy(itemsLeft);
     }
 
+    public Neighbourhood getSolutionAsNeighbourhood(){
+        return new Neighbourhood(mknapsacks, mitemsNotUsed);
+    }
+
 }
