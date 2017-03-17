@@ -22,12 +22,11 @@ public class NeighbourSearch {
 
     public static Neighbourhood rotate(Neighbourhood current){
         ArrayList<Knapsack> knapsacks = current.getKnapsacks();
-        Neighbourhood best = current;
+        Neighbourhood best = current.getCopy();
         Neighbourhood tmp;
         for(Knapsack from : knapsacks){
             for(Knapsack to : knapsacks){
                 if(!from.equals(to)){
-
 
                     for(Item fromItem : from.getItems()){
                         tmp = triesToRotateItems(from, to, fromItem, current);
@@ -45,7 +44,6 @@ public class NeighbourSearch {
                                 //Also needs to add the item we removed to not included.
                                 best = tmp;
                                 best.addItemNotUses(remove);
-                                break;
                             }
                         }
                     }
@@ -60,7 +58,7 @@ public class NeighbourSearch {
         Neighbourhood tmp;
         Knapsack toCp = to.getCopy();
 
-        if (to.addItem(i)) {
+        if (toCp.addItem(i)) {
             // If adding item to other sack was successful, remove it from the first sack
             Knapsack fromCp = from.getCopy();
             fromCp.removeItem(i);
@@ -75,31 +73,34 @@ public class NeighbourSearch {
         return best;
     }
 
+    public static ArrayList<Item> addNonIncluded(int totWeight, int c, int currentWeight,
+                                                 int currentValue, ArrayList<Item> current,
+                                                 ArrayList<Item> best, int bestValue, ArrayList<Item> all){
+        if(currentValue > bestValue){
+            bestValue = currentValue;
+            best = (ArrayList<Item>)current.clone();
+            System.out.println("nytt bästa!");
+        }
 
+        //Gått genom alla items
+        if(c >= all.size()){
+            return best;
+        }
 
-    public static ArrayList<Item> addNonIncluded(int totWeight, int c, int currentWeight, int currentValue, ArrayList<Item> current, ArrayList<Item> best, int bestValue, ArrayList<Item> all){
-
+        //Finns fler att gå genom (all)
         Item item = all.get(c);
         if(totWeight >= currentWeight + item.getWeight()){
             ArrayList<Item> currentClone = (ArrayList<Item>)current.clone();
             ArrayList<Item> allClone = (ArrayList<Item>)all.clone();
             currentClone.add(item);
             allClone.remove(item);
-            return addNonIncluded(totWeight, 0, currentWeight + item.getWeight(),currentValue + item.getValue(), currentClone, best, bestValue, allClone);
+            return addNonIncluded(totWeight, 0, currentWeight + item.getWeight(),currentValue + item.getValue(),
+                    currentClone, best, bestValue, allClone);
         }else{
-            //Finns fortfarande fler att testa.
-            if(c + 1 < all.size()){
-                return addNonIncluded(totWeight, c+1, currentWeight, currentValue, current, best, bestValue, all);
-            }else{
-                if(currentValue > bestValue){
-                    bestValue = currentValue;
-                    best = (ArrayList<Item>)current.clone();
-                    System.out.println("nytt bästa!");
-                }
-                return best;
-            }
+             return addNonIncluded(totWeight, c+1, currentWeight, currentValue, current, best, bestValue, all);
         }
     }
+
 
     /**
      *
@@ -107,34 +108,27 @@ public class NeighbourSearch {
      * @param current
      */
     public static Neighbourhood triesToAddItems(Knapsack k, Neighbourhood current){
-        Neighbourhood best = current;
-        ArrayList<Item> nonUsed = new ArrayList<Item>(current.getItemsNotUsed());
-        Collections.sort(nonUsed);
+        Neighbourhood best = current.getCopy();
+        Neighbourhood tmp = current.getCopy();
+        LinkedList<Item> all = (LinkedList<Item>) current.getItemsNotUsed().clone();
 
-        Knapsack tmp;
-        LinkedList<Item> convertLL;
-        Neighbourhood tmpNeighbourhood;
-        ArrayList<Item> tmpNonUsed;
-        int start;
+        int weightLeft = k.getWeightLeft();
+        ArrayList<Item> items = addNonIncluded(weightLeft, 0, 0, 0,
+                                                new ArrayList<>(), new ArrayList<>(), 0,
+                                                new ArrayList<>(all));
 
-        for(int i = 0; i < nonUsed.size(); i++){
-            tmp = k.getCopy();
-            tmpNonUsed = (ArrayList<Item>) nonUsed.clone();
-            start = i;
-            while(tmp.addItem(nonUsed.get(start))){
-                tmpNonUsed.remove(start);
-                start = i+1%nonUsed.size();
+        if(items.size() > 0){
+            //Found something
+            LinkedList<Item> itemsleft = tmp.getItemsNotUsed();
+            for(Item item : items){
+                k.addItem(item);
+                itemsleft.remove(item);
             }
+            tmp.getKnapsacks().remove(tmp.getKnapsack(k.getID()));
+            tmp.getKnapsacks().add(k);
 
-            convertLL = new LinkedList<>(tmpNonUsed);
-            tmpNeighbourhood = current.getCopy();
-            tmpNeighbourhood.getKnapsacks().remove(tmpNeighbourhood.getKnapsack(tmp.getID()));
-            tmpNeighbourhood.getKnapsacks().add(tmp);
-            tmpNeighbourhood.setItemsNotUsed(convertLL);
-
-            if(tmpNeighbourhood.getValue() > best.getValue()){
-                best = tmpNeighbourhood;
-                //is a break here bad? when i has sorted before?
+            if(tmp.getValue() > best.getValue()){
+                best = tmp;
             }
         }
         return best;

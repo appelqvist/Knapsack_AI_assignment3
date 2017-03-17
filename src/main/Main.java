@@ -12,8 +12,8 @@ import java.util.LinkedList;
  */
 public class Main {
     public static void main(String[] args) {
-        //new Main().startApplication();
-        new Main().test();
+        new Main().startApplication();
+        //new Main().test();
     }
 
     private Neighbourhood startGreedy(ArrayList<Knapsack> knapsacks, LinkedList<Item> items){
@@ -33,15 +33,27 @@ public class Main {
     }
 
     private void test(){
-        ArrayList<Item> a = new ArrayList<>();
-        a.add(new Item(2,4));
+        LinkedList<Item> a = new LinkedList<>();
+        a.add(new Item(6,4));
         a.add(new Item(4,2));
         a.add(new Item(1,1));
         a.add(new Item(3,3));
         a.add(new Item(2,7));
         a.add(new Item(2,4));
 
-        System.out.println(NeighbourSearch.addNonIncluded(5, 0, 0, 0, new ArrayList<>(), new ArrayList<>(), 0, a));
+        Knapsack k = new Knapsack(0,7);
+        k.addItem(new Item(2,2));
+        Knapsack k2 = new Knapsack(1,6);
+        k2.addItem(new Item(5,6));
+
+        ArrayList<Knapsack> knapsacks = new ArrayList<>();
+        knapsacks.add(k);
+        knapsacks.add(k2);
+
+        Neighbourhood nh = new Neighbourhood(knapsacks, a);
+        nh = NeighbourSearch.triesToAddItems(k,nh);
+        System.out.println(nh.getKnapsacks());
+        System.out.println(nh.getItemsNotUsed());
     }
 
     private void startApplication() {
