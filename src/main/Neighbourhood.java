@@ -37,6 +37,20 @@ public class Neighbourhood {
         return mitemsNotUsed;
     }
 
+    public void setItemsNotUsed(LinkedList<Item> items){
+        this.mitemsNotUsed = items;
+    }
+
+    public Knapsack getKnapsack(int id) {
+        for(Knapsack k : mknapsacks){
+            if(k.getID() == id){
+                return k;
+            }
+        }
+        System.err.println("getKnapsack()");
+        return null; //PANG!
+    }
+
     public ArrayList<Knapsack> getKnapsacks(){
         return mknapsacks;
     }

@@ -54,20 +54,46 @@ public class NeighbourSearch {
     public static Neighbourhood triesToRotateItems(Knapsack from, Knapsack to, Item i, Neighbourhood current){
         Neighbourhood best = current;
         Knapsack toCp = to.getCopy();
-
         return best;
     }
 
-    public static void triesToAddItems(Knapsack k, Neighbourhood current){
+    /**
+     *
+     * @param k
+     * @param current
+     */
+    public static Neighbourhood triesToAddItems(Knapsack k, Neighbourhood current){
         Neighbourhood best = current;
-        Knapsack tmp;
-        LinkedList<Item> nonUsed = current.getItemsNotUsed();
-        //Collections.sort(nonUsed);  //No need, maybe to use later
-        for(Item item : nonUsed){
-            tmp = k.getCopy();
-            if(tmp.addItem(item)){
+        ArrayList<Item> nonUsed = new ArrayList<Item>(current.getItemsNotUsed());
+        Collections.sort(nonUsed);
 
+        Knapsack tmp;
+        LinkedList<Item> convertLL;
+        Neighbourhood tmpNeighbourhood;
+        ArrayList<Item> tmpNonUsed;
+        int start;
+
+        for(int i = 0; i < nonUsed.size(); i++){
+            tmp = k.getCopy();
+            tmpNonUsed = (ArrayList<Item>) nonUsed.clone();
+            start = i;
+            while(tmp.addItem(nonUsed.get(start))){
+                tmpNonUsed.remove(start);
+                start = i+1%nonUsed.size();
+            }
+
+            convertLL = new LinkedList<>(tmpNonUsed);
+            tmpNeighbourhood = current.getCopy();
+            tmpNeighbourhood.getKnapsacks().remove(tmpNeighbourhood.getKnapsack(tmp.getID()));
+            tmpNeighbourhood.getKnapsacks().add(tmp);
+            tmpNeighbourhood.setItemsNotUsed(convertLL);
+
+            if(tmpNeighbourhood.getValue() > best.getValue()){
+                best = tmpNeighbourhood;
+                //is a break here bad? when i has sorted before?
             }
         }
+
+        return best;
     }
 }
