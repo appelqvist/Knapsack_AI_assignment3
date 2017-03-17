@@ -1,15 +1,13 @@
 package main;
 
-import sun.awt.image.ImageWatched;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 
 /**
- * Created by A.Appelqvist on 3/14/17.
+ * Generate a greedy solution
+ * Created by A.Appelqvist.
  */
-
 public class GreedySolver {
     private ArrayList<Knapsack> mknapsacks;
     private LinkedList<Item> mitems;
@@ -24,8 +22,6 @@ public class GreedySolver {
     public ArrayList<Knapsack> startGreedy(){
         Collections.sort(mitems);
         fillGreedy(mitems);
-        System.out.println(mknapsacks);
-        System.out.println("Not used:"+ mitemsNotUsed);
         return mknapsacks;
     }
 

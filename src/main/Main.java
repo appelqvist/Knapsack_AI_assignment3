@@ -8,52 +8,41 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 /**
- * Created by A.Appelqvist on 3/13/17.
+ * Start class
+ * Created by A.Appelqvist.
  */
 public class Main {
     public static void main(String[] args) {
         new Main().startApplication();
-        //new Main().test();
     }
 
     private Neighbourhood startGreedy(ArrayList<Knapsack> knapsacks, LinkedList<Item> items){
-        GreedySolver gs = new GreedySolver(knapsacks, items);
+        GreedySolver gs = new GreedySolver(knapsacks, (LinkedList<Item>)items.clone());
         gs.startGreedy();
         return gs.getSolutionAsNeighbourhood();
     }
 
     private Neighbourhood startNeighbourSearch(ArrayList<Knapsack> knapsacks, LinkedList<Item> items){
         Neighbourhood currentNeighbourhood = startGreedy(knapsacks, items);
-        Neighbourhood improvedSolutionNeighbourhood = NeighbourSearch.improve(currentNeighbourhood,currentNeighbourhood, true);
+        Neighbourhood improvedSolutionNeighbourhood = NeighbourSearch.improve(currentNeighbourhood);
         return improvedSolutionNeighbourhood;
     }
 
-    private void printResult(Neighbourhood n){
-        System.out.println(n);
-    }
+    private void printResult(Neighbourhood n, ArrayList<Item> all){
+        ArrayList<Item> itemsinNeighbourhood = n.getAllItems();
 
-    private void test(){
-        LinkedList<Item> a = new LinkedList<>();
-        a.add(new Item(6,4));
-        a.add(new Item(4,2));
-        a.add(new Item(1,1));
-        a.add(new Item(3,3));
-        a.add(new Item(2,7));
-        a.add(new Item(2,4));
+        boolean ok = true;
+        for(Item i : itemsinNeighbourhood){
+            if(!all.remove(i)){
+                ok = false;
+            }
+        }
+        if(!all.isEmpty()){
+            ok = false;
+        }
 
-        Knapsack k = new Knapsack(0,7);
-        k.addItem(new Item(2,2));
-        Knapsack k2 = new Knapsack(1,6);
-        k2.addItem(new Item(5,6));
-
-        ArrayList<Knapsack> knapsacks = new ArrayList<>();
-        knapsacks.add(k);
-        knapsacks.add(k2);
-
-        Neighbourhood nh = new Neighbourhood(knapsacks, a);
-        nh = NeighbourSearch.triesToAddItems(k,nh);
-        System.out.println(nh.getKnapsacks());
-        System.out.println(nh.getItemsNotUsed());
+        System.out.println(n+"\nTotal value: "+n.getValue());
+        System.out.println("Validate: "+ok);
     }
 
     private void startApplication() {
@@ -86,9 +75,11 @@ public class Main {
                 }
 
                 if (answer == 1) {
-                    printResult(startGreedy(knapsacks, items));
+                    System.out.println("Greedy");
+                    printResult(startGreedy(knapsacks, items), new ArrayList<>(items));
                 } else if (answer == 2) {
-                    startNeighbourSearch(knapsacks,items);
+                    System.out.println("Neighbour");
+                    printResult(startNeighbourSearch(knapsacks,items), new ArrayList<>(items));
                 }
             }
         }

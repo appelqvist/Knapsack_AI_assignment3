@@ -1,7 +1,8 @@
 package main;
 
 /**
- * Created by A.Appelqvist on 3/14/17.
+ * Representing a Item with value and a weight
+ * Created by A.Appelqvist.
  */
 public class Item implements Comparable<Item>{
     private int mvalue;

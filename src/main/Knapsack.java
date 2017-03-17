@@ -3,7 +3,8 @@ package main;
 import java.util.LinkedList;
 
 /**
- * Created by A.Appelqvist on 3/14/17.
+ * Representing a knapsack
+ * Created by A.Appelqvist.
  */
 public class Knapsack implements Comparable<Knapsack>{
     private int mid;
@@ -40,17 +41,10 @@ public class Knapsack implements Comparable<Knapsack>{
 
     public int getID(){ return this.mid; }
 
-    public int getWeightLimit() {
-        return this.mweightLimit;
-    }
-
     public int getValue() {
         return this.mvalue;
     }
 
-    public int getWeight() {
-        return this.mweight;
-    }
 
     public LinkedList<Item> getItems() { return this.mitems; }
 

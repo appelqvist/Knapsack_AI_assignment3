@@ -4,10 +4,10 @@ import sun.awt.image.ImageWatched;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 
 /**
- * Created by A.Appelqvist on 3/16/17.
+ * A Neighbourhood
+ * Created by A.Appelqvist.
  */
 public class Neighbourhood {
     private ArrayList<Knapsack> mknapsacks;
@@ -37,10 +37,6 @@ public class Neighbourhood {
         return mitemsNotUsed;
     }
 
-    public void setItemsNotUsed(LinkedList<Item> items){
-        this.mitemsNotUsed = items;
-    }
-
     public Knapsack getKnapsack(int id) {
         for(Knapsack k : mknapsacks){
             if(k.getID() == id){
@@ -48,7 +44,7 @@ public class Neighbourhood {
             }
         }
         System.err.println("getKnapsack()");
-        return null; //PANG!
+        return null;
     }
 
     public ArrayList<Knapsack> getKnapsacks(){
@@ -57,5 +53,23 @@ public class Neighbourhood {
 
     public Neighbourhood getCopy(){
         return new Neighbourhood(mknapsacks, mitemsNotUsed);
+    }
+
+    public ArrayList<Item> getAllItems(){
+        ArrayList<Item> all = new ArrayList<>();
+        for(Item i : mitemsNotUsed){
+            all.add(i);
+        }
+        for(Knapsack k : mknapsacks){
+            for(Item i : k.getItems()){
+                all.add(i);
+            }
+        }
+        return all;
+    }
+
+    @Override
+    public String toString() {
+        return "KNAPSACKS:\n" + mknapsacks + "\n";
     }
 }
