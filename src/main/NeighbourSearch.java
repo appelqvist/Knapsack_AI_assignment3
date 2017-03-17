@@ -1,5 +1,7 @@
 package main;
 
+import sun.awt.image.ImageWatched;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -14,7 +16,7 @@ public class NeighbourSearch {
             return best;
         }else{
             Neighbourhood foundNeighbour = rotate(current.getCopy());
-            return improve(rotate(foundNeighbour), current, false);
+            return improve(rotate(foundNeighbour), best, false);
         }
     }
 
@@ -25,6 +27,8 @@ public class NeighbourSearch {
         for(Knapsack from : knapsacks){
             for(Knapsack to : knapsacks){
                 if(!from.equals(to)){
+
+
                     for(Item fromItem : from.getItems()){
                         tmp = triesToRotateItems(from, to, fromItem, current);
                         if(tmp != current){ //Has been a change, found local maximum
@@ -53,8 +57,48 @@ public class NeighbourSearch {
 
     public static Neighbourhood triesToRotateItems(Knapsack from, Knapsack to, Item i, Neighbourhood current){
         Neighbourhood best = current;
+        Neighbourhood tmp;
         Knapsack toCp = to.getCopy();
+
+        if (to.addItem(i)) {
+            // If adding item to other sack was successful, remove it from the first sack
+            Knapsack fromCp = from.getCopy();
+            fromCp.removeItem(i);
+
+            // Try adding a non-included item to the first sack
+            tmp = triesToAddItems(fromCp, current);
+
+            if(tmp.getValue() > best.getValue()){
+                best = tmp;
+            }
+        }
         return best;
+    }
+
+
+
+    public static ArrayList<Item> addNonIncluded(int totWeight, int c, int currentWeight, int currentValue, ArrayList<Item> current, ArrayList<Item> best, int bestValue, ArrayList<Item> all){
+
+        Item item = all.get(c);
+        if(totWeight >= currentWeight + item.getWeight()){
+            ArrayList<Item> currentClone = (ArrayList<Item>)current.clone();
+            ArrayList<Item> allClone = (ArrayList<Item>)all.clone();
+            currentClone.add(item);
+            allClone.remove(item);
+            return addNonIncluded(totWeight, 0, currentWeight + item.getWeight(),currentValue + item.getValue(), currentClone, best, bestValue, allClone);
+        }else{
+            //Finns fortfarande fler att testa.
+            if(c + 1 < all.size()){
+                return addNonIncluded(totWeight, c+1, currentWeight, currentValue, current, best, bestValue, all);
+            }else{
+                if(currentValue > bestValue){
+                    bestValue = currentValue;
+                    best = (ArrayList<Item>)current.clone();
+                    System.out.println("nytt bästa!");
+                }
+                return best;
+            }
+        }
     }
 
     /**
@@ -93,7 +137,6 @@ public class NeighbourSearch {
                 //is a break here bad? when i has sorted before?
             }
         }
-
         return best;
     }
 }

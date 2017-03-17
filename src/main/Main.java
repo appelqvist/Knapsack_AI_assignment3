@@ -12,7 +12,8 @@ import java.util.LinkedList;
  */
 public class Main {
     public static void main(String[] args) {
-        new Main().startApplication();
+        //new Main().startApplication();
+        new Main().test();
     }
 
     private Neighbourhood startGreedy(ArrayList<Knapsack> knapsacks, LinkedList<Item> items){
@@ -23,12 +24,24 @@ public class Main {
 
     private Neighbourhood startNeighbourSearch(ArrayList<Knapsack> knapsacks, LinkedList<Item> items){
         Neighbourhood currentNeighbourhood = startGreedy(knapsacks, items);
-        Neighbourhood improvedSolutionNeighbourhood = NeighbourSearch.improvedSolution(currentNeighbourhood);
+        Neighbourhood improvedSolutionNeighbourhood = NeighbourSearch.improve(currentNeighbourhood,currentNeighbourhood, true);
         return improvedSolutionNeighbourhood;
     }
 
     private void printResult(Neighbourhood n){
         System.out.println(n);
+    }
+
+    private void test(){
+        ArrayList<Item> a = new ArrayList<>();
+        a.add(new Item(2,4));
+        a.add(new Item(4,2));
+        a.add(new Item(1,1));
+        a.add(new Item(3,3));
+        a.add(new Item(2,7));
+        a.add(new Item(2,4));
+
+        System.out.println(NeighbourSearch.addNonIncluded(5, 0, 0, 0, new ArrayList<>(), new ArrayList<>(), 0, a));
     }
 
     private void startApplication() {
