@@ -1,1 +1,2 @@
-# Knapsack_AI_assignment3
+# Knapsack
+This is the thrid assignment in a AI-course
